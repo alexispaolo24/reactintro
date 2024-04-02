@@ -3,39 +3,65 @@ import { posts as data } from "../data/posts";
 //private
 let posts = [...data];
 
-function getPosts() {
-  //get all posts
+export function getPosts() {
+  return posts
 }
 
-function getPostsByUser(userId) {
-  //get all posts by userId
+export function getPostsByUser(userId) {
+  return posts.filter(post => post.userId === userId)
 }
 
-function getPostById(id) {
-  //get a single post by id
+export function getPostById(id) {
+  return posts.find(post => post.id === id)
 }
 
-function addPost(post) {
-  //add new post to BEGINNING of posts array
-  // use generateId function and pass posts array as the argument to generate a unique id.
+function generateId(arr){
+  return arr.length > 0 ? Math.max(...arr.map(post => post.id)) + 1 : 1
 }
 
-function updatePostTitle(id, title) {
-  //update post title
+export function addPost(post) {
+  const id = generateId(posts)
+  post.id = id
+  posts.unshift(post)
+  return id
 }
 
-function updatePostBody(id, body) {
-  //update post body
+export function updatePostTitle(id, title) {
+  const post = getPostById(id)
+  if(post){
+    post.title = title
+    return true
+  }
+  return false
 }
 
-function updatePost(id, post) {
-  //update post title and or body (imagine a form where user is allowed to edit both title and post but may also choose to only edit one of them)
+export function updatePostBody(id, body) {
+  const post = getPostById(id)
+  if(post){
+    post.body = body
+    return true
+  }
+  return false
 }
 
-function deletePostBy(id) {
-  //delete post by id
+export function updatePost(id, post) {
+  const origPost = getPostById(id)
+  if (origPost){
+    origPost.title = post.title !== undefined ? post.title : origPost.title
+    origPost.body = post.body !== undefined ? post.body : origPost.body
+    return true
+  }
+  return false
 }
 
-function deletePostsByUserId(userId) {
-  //delete all posts of a user by given userId
+export function deletePostBy(id) {
+  const iLength = posts.length
+  posts = posts.filter(post => post.id !== id)
+  return iLength !== posts.length
+}
+
+export function deletePostsByUserId(userId) {
+  const iLength = posts.length
+  posts = posts.filter(post => post.userId !==userId)
+  return iLength !== posts.length
 }
